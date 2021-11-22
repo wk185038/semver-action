@@ -1,0 +1,18 @@
+name: Package repository
+on: [push]
+jobs:
+  Run-Tests:
+    runs-on: ubuntu-latest
+    name: Run SBT Tests
+    steps:
+      - name: Run SBT Tests
+        run: |
+          echo "Running Tests!!"
+  Tag-repo-for-release:
+    runs-on: ubuntu-latest
+    name: Tag Repo for Release
+    steps:
+      - name: Get Latest Commit
+        run: |
+          echo "Getting Latest Commit"
+    
