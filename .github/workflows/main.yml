@@ -17,8 +17,7 @@ jobs:
         echo "Running Tests!!"
     - name: Get Latest Commit
       run: |
-        git describe
-        git describe --tags
+        git describe  --abbrev=0 --tags
     - name: Display head_ref and base_ref
       run: |
         echo head ref == ${{github.head_ref}}
