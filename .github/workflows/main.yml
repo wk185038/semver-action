@@ -11,6 +11,7 @@ jobs:
       run: |
         echo "Running Tests!!"
     - name: Get Latest Commit
+      if: github.event.pull_request.merged == true
       run: |
         git describe --abbrev=0 --tags
     - name: Display head_ref and base_ref
