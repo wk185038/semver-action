@@ -28,9 +28,9 @@ jobs:
       id: new_tag
       run: |
         echo ${{toJSON(steps.recent_tag)}}
-        echo ${{ steps.recent_tag.output.RECENT_TAG }}
-        echo ${{ steps.recent_tag.output.TAG_NAME }}
-        echo "refs/tags/${{ steps.recent-tag.output.RECENT_TAG }}"
+        echo ${{ steps.recent_tag.outputs.RECENT_TAG }}
+        echo ${{ steps.recent_tag.outputs.TAG_NAME }}
+        echo "refs/tags/${{ steps.recent-tag.outputs.RECENT_TAG }}"
  
     - name: Display head_ref and base_ref
       run: |
