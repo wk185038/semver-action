@@ -4,3 +4,4 @@ feature hello
 text.txt
 blah blah
 more stufffs
+hello

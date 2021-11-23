@@ -25,19 +25,7 @@ jobs:
       id: new-tag
       run: |
         echo "refs/tags/${{ steps.recent-tag.output.RECENT_TAG }}"
-      
-#     - name: Create tag
-#       uses: actions/github-script@v3
-#       with:
-#         github-token: ${{ github.token }}
-#         script: |
-#           github.git.createRef({
-#             owner: context.repo.owner,
-#             repo: context.repo.repo,
-#             ref: "refs/tags/${{ steps.recent-tag.output.RECENT_TAG }}",
-#             sha: context.sha
-#           })
-
+ 
     - name: Display head_ref and base_ref
       run: |
         echo head ref == ${{github.head_ref}}
