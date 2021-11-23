@@ -19,7 +19,7 @@ jobs:
         
     - name: Get most recent tag
       id: recent-tag
-      run: echo '::set-output name=RECENT_TAG::$(git describe --abbrev=0 --tags)'
+      run: git describe --abbrev=0 --tags; echo '::set-output name=RECENT_TAG::$(git describe --abbrev=0 --tags)'
     
     - name: Update tag number
       id: new-tag
