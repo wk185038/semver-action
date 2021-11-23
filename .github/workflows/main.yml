@@ -2,6 +2,7 @@ name: Package repository
 on: [pull_request]
 jobs:
   test:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Run SBT Tests
     steps:
@@ -11,7 +12,6 @@ jobs:
       run: |
         echo "Running Tests!!"
     - name: Get Latest Commit
-      if: github.event.pull_request.merged == true
       run: |
         git describe --abbrev=0 --tags
     - name: Display head_ref and base_ref
