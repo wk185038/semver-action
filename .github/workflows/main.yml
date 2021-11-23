@@ -1,5 +1,7 @@
 name: Package repository
-on: [pull_request]
+on: 
+  pull_request:
+    types: [closed]
 jobs:
   test:
     if: github.event.pull_request.merged == true
