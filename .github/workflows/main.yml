@@ -10,26 +10,22 @@ jobs:
     - name: Run SBT Tests
       run: |
         echo "Running Tests!!"
-  tag:
-    needs: test
-    runs-on: ubuntu-latest
-    name: Tag Repo for Release
-    steps:
-    - name: Display head_ref and base_ref
-      run: |
-        echo head ref == ${github.head_ref}
-        echo base ref == ${github.base_ref}
     - name: Get Latest Commit
       run: |
-        echo "Getting Latest Commit"
-  publish:
-    needs: tag
-    runs-on: ubuntu-latest
-    name: Publish artifact
-    steps:
-    - name: Publish repo
+        git describe --abbrev=0 --tags
+    - name: Display head_ref and base_ref
       run: |
-        echo "publishing..."
+        echo head ref == ${{github.head_ref}}
+        echo base ref == ${{github.base_ref}}
+    
+#   publish:
+#     needs: test
+#     runs-on: ubuntu-latest
+#     name: Publish artifact
+#     steps:
+#     - name: Publish repo
+#       run: |
+#         echo "publishing..."
 
 
 
