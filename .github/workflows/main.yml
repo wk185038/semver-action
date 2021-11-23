@@ -2,6 +2,7 @@ name: Package repository
 on: [pull_request]
 jobs:
   test:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Run SBT Tests
     steps:
