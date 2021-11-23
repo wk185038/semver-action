@@ -15,13 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Tag Repo for Release
     steps:
+    - name: Get Latest Commit
+      run: |
+        git describe --abbrev=0 --tags
     - name: Display head_ref and base_ref
       run: |
         echo head ref == ${{github.head_ref}}
         echo base ref == ${{github.base_ref}}
-    - name: Get Latest Commit
-      run: |
-        echo "Getting Latest Commit"
+    
   publish:
     needs: tag
     runs-on: ubuntu-latest
