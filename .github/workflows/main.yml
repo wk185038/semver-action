@@ -27,7 +27,6 @@ jobs:
     - name: Update tag number
       id: new_tag
       run: |
-        echo ${{toJSON(steps.recent_tag)}}
         echo ${{ steps.recent_tag.outputs.RECENT_TAG }}
         echo ${{ steps.recent_tag.outputs.TAG_NAME }}
         echo "refs/tags/${{ steps.recent-tag.outputs.RECENT_TAG }}"
