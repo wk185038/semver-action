@@ -33,9 +33,9 @@ jobs:
     - name: Parse semver
       id: parsed_semver
       uses: actions/github-script@0.9.0
-      with: 
-        script: |
-          
+      with:
+        script: return ${{ steps.recent_tag.outputs.RECENT_TAG }}
+        result-encoding: string
         
  
     - name: Display head_ref and base_ref
