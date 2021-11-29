@@ -23,25 +23,16 @@ jobs:
         echo "::set-output name=RECENT_TAG::$(git describe --abbrev=0 --tags)"
         echo "::set-output name=TAG_NAME::hello"
       id: recent_tag
-    
-    - name: Update tag number
-      id: new_tag
-      run: |
-        echo ${{ steps.recent_tag.outputs.RECENT_TAG }}
-        echo ${{ steps.recent_tag.outputs.TAG_NAME }}
-        echo "refs/tags/${{ steps.recent_tag.outputs.RECENT_TAG }}"
+      
     - name: Parse semver
       id: parsed_semver
       uses: actions/github-script@v5
       with:
         script: |
-          console.log("${{github.head_ref}},  ${{github.base_ref}}")
           let oldSemver = "${{steps.recent_tag.outputs.RECENT_TAG}}"
-          // return "${{steps.recent_tag.outputs.RECENT_TAG}}"
-          // let oldSemver = "0.1.1";
-          // console.log(`old semver: ${oldSemver}`);
           let [major, minor, patch] = oldSemver.split('.');
           let [branch, commit] = ["", ""];
+          
           if (patch.includes('+') || patch.includes('-')) {
             let meta = patch.split("-");
             patch = meta[0];
@@ -60,7 +51,9 @@ jobs:
             console.log(`you can't merge ${headRef} to ${baseRef}. Please follow the correct branching strategy`);
             return oldSemver
           }
+          
           let newSemver = ""
+          
           if (branch && commit) {
             newSemver = "".concat(major, ".",minor, ".",patch, "-",branch,"+", commit);
           }
