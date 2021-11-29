@@ -36,7 +36,45 @@ jobs:
       with:
         script: |
           console.log("${{github.head_ref}},  ${{github.base_ref}}")
-          return "${{steps.recent_tag.outputs.RECENT_TAG}}"
+          let oldSemver = "${{steps.recent_tag.outputs.RECENT_TAG}}"
+          // return "${{steps.recent_tag.outputs.RECENT_TAG}}"
+          // let oldSemver = "0.1.1";
+          // console.log(`old semver: ${oldSemver}`);
+          let [major, minor, patch] = oldSemver.split('.');
+          let [branch, commit] = ["", ""];
+          if (patch.includes('+') || patch.includes('-')) {
+            let meta = patch.split("-");
+            patch = meta[0];
+            branch, commit = meta[1].split("+");
+            [branch, commit] = meta[1].split("+");
+          }
+
+          let headRef = "${{github.head_ref}}";
+          let baseRef = "${{github.base_ref}}";
+
+          if (baseRef.includes("develop", 0)) {
+            commit = (parseInt(commit)+1).toString()
+          } else if (headRef.includes("release/", 0) && baseRef.includes("main",0)) {
+            minor = (parseInt(minor)+1).toString()
+          } else {
+            console.log(`you can't merge ${headRef} to ${baseRef}. Please follow the correct branching strategy`);
+            return oldSemver
+          }
+          let newSemver = ""
+          if (branch && commit) {
+            newSemver = "".concat(major, ".",minor, ".",patch, "-",branch,"+", commit);
+          }
+          else {
+            newSemver = "".concat(major, ".",minor, ".",patch);
+          }  
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: `ref/tags/${newSemver}`,
+            sha: context.github.sha,
+          });
+          return newSemver;
+          
         result-encoding: string
  
     - name: Display head_ref and base_ref
