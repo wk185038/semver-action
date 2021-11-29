@@ -34,9 +34,10 @@ jobs:
       id: parsed_semver
       uses: actions/github-script@0.9.0
       with:
-        script: return "${{steps.recent_tag.outputs.RECENT_TAG}}"
+        script: |
+          console.log("${{github.head_ref}},  ${{github.base_ref}}")
+          return "${{steps.recent_tag.outputs.RECENT_TAG}}"
         result-encoding: string
-        
  
     - name: Display head_ref and base_ref
       run: |
