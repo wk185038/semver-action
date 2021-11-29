@@ -50,6 +50,7 @@ jobs:
           }
           let headRef = "${{github.head_ref}}";
           let baseRef = "${{github.base_ref}}";
+
           if (baseRef.includes("develop", 0)) {
             commit = (parseInt(commit)+1).toString()
           } else if (headRef.includes("release/", 0) && baseRef.includes("main",0)) {
