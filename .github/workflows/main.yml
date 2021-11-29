@@ -71,7 +71,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             ref: `ref/tags/${newSemver}`,
-            sha: context.github.sha,
+            sha: context.sha,
           });
           return newSemver;
           
