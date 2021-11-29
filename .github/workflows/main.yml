@@ -70,7 +70,7 @@ jobs:
           github.rest.git.createRef({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            ref: `ref/tags/${newSemver}`,
+            ref: `refs/tags/${newSemver}`,
             sha: context.sha,
           });
           return newSemver;
