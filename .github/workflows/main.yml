@@ -12,12 +12,69 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        
     - name: Run SBT Tests
       run: |
         echo "Running Tests!!"
-    - name: Get Latest Commit
+        
+    - name: Get most recent tag
       run: |
-        git describe  --abbrev=0 --tags
+        git describe --abbrev=0 --tags
+        echo "::set-output name=RECENT_TAG::$(git describe --abbrev=0 --tags)"
+        echo "::set-output name=TAG_NAME::hello"
+      id: recent_tag
+    
+    - name: Update tag number
+      id: new_tag
+      run: |
+        echo ${{ steps.recent_tag.outputs.RECENT_TAG }}
+        echo ${{ steps.recent_tag.outputs.TAG_NAME }}
+        echo "refs/tags/${{ steps.recent_tag.outputs.RECENT_TAG }}"
+    - name: Parse semver
+      id: parsed_semver
+      uses: actions/github-script@v5
+      with:
+        script: |
+          console.log("${{github.head_ref}},  ${{github.base_ref}}")
+          let oldSemver = "${{steps.recent_tag.outputs.RECENT_TAG}}"
+          // return "${{steps.recent_tag.outputs.RECENT_TAG}}"
+          // let oldSemver = "0.1.1";
+          // console.log(`old semver: ${oldSemver}`);
+          let [major, minor, patch] = oldSemver.split('.');
+          let [branch, commit] = ["", ""];
+          if (patch.includes('+') || patch.includes('-')) {
+            let meta = patch.split("-");
+            patch = meta[0];
+            branch, commit = meta[1].split("+");
+            [branch, commit] = meta[1].split("+");
+          }
+          let headRef = "${{github.head_ref}}";
+          let baseRef = "${{github.base_ref}}";
+          if (baseRef.includes("develop", 0)) {
+            commit = (parseInt(commit)+1).toString()
+          } else if (headRef.includes("release/", 0) && baseRef.includes("main",0)) {
+            minor = (parseInt(minor)+1).toString()
+          } else {
+            console.log(`you can't merge ${headRef} to ${baseRef}. Please follow the correct branching strategy`);
+            return oldSemver
+          }
+          let newSemver = ""
+          if (branch && commit) {
+            newSemver = "".concat(major, ".",minor, ".",patch, "-",branch,"+", commit);
+          }
+          else {
+            newSemver = "".concat(major, ".",minor, ".",patch);
+          }  
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: `refs/tags/${newSemver}`,
+            sha: context.sha,
+          });
+          return newSemver;
+          
+        result-encoding: string
+ 
     - name: Display head_ref and base_ref
       run: |
         echo head ref == ${{github.head_ref}}
@@ -31,6 +88,3 @@ jobs:
 #     - name: Publish repo
 #       run: |
 #         echo "publishing..."
-
-
-
