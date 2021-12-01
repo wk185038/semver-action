@@ -1,7 +1,6 @@
 name: Get Semantic Version for branch
 on: 
-  branch_protection_rule:
-    types: [created, deleted]
+  create
 jobs:
   create:
     runs-on: ubuntu-latest
@@ -13,5 +12,6 @@ jobs:
         fetch-depth: 0
         
     - name: Parse semver
+      if: ${{ contains(github.ref, 'refs/heads') }}
       run: |
         ls
