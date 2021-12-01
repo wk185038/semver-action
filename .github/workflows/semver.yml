@@ -6,6 +6,7 @@ on:
     - main
     - develop
   create:
+  push:
 jobs:
   create:
     runs-on: ubuntu-latest
