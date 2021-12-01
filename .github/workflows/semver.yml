@@ -1,0 +1,17 @@
+name: Get Semantic Version for branch
+on: 
+  branch_protection_rule:
+    types: [created, deleted]
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    name: Create semantic version for the branch
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        
+    - name: Parse semver
+      run: |
+        ls
