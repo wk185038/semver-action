@@ -1,0 +1,9 @@
+name: Push event
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Push event
+    steps:
+    - name: Push occured
+      run: echo "push happened"
