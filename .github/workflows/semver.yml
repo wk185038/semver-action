@@ -41,9 +41,9 @@ jobs:
       if: ${{ github.event.pull_request && github.event.pull_request.merged == true }}
       run: |
         PARSED_SEMVER = steps.parsed_semver.outputs.PARSED_SEMVER
-        MAJOR=PARSED_SEMVER[0]
-        MINOR=PARSED_SEMVER[1]
-        PATCH=PARSED_SEMVER[2]
+        MAJOR=$PARSED_SEMVER[0]
+        MINOR=$PARSED_SEMVER[1]
+        PATCH=$PARSED_SEMVER[2]
         echo $MAJOR $MINOR $PATCH
 
 
