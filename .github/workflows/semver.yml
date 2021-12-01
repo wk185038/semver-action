@@ -23,15 +23,13 @@ jobs:
     - name: Parse Current Semver
       id: parsed_semver
       run: |
+      
         echo ${{ github.ref }}
         VERSION="${{ steps.current_semver.outputs.SEMVER }}"
         echo $VERSION
         echo ${{ github.ref_name }}
-        # Pattern by almic (https://gist.github.com/jhorsman/62eeea161a13b80e39f5249281e17c39)
-        PAT='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$'
-        echo $PAT
-        if [[$VERSION =~ $PAT]; then
-          # TODO: Check if BASH_REMATCH has the correct size
+        if [[$VERSION =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?]; then
+          # TODO: Change this using github script
           MAJOR="${BASH_REMATCH[0]}"
           MINOR="${BASH_REMATCH[1]}"
           PATCH="${BASH_REMATCH[2]}"
