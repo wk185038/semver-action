@@ -16,3 +16,4 @@ jobs:
       run: |
         echo ${{ github.ref }}
         cat Versionfile
+        echo ${{ github.ref_name }}
