@@ -10,7 +10,6 @@ jobs:
   create:
     runs-on: ubuntu-latest
     name: Create branch semver
-    if: ${{ contains(github.ref, 'refs/heads') }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
