@@ -1,19 +1,66 @@
 name: Get Semantic Version for branch
 on: 
-  create
+  pull_request:
+    types: [closed]
+    branches:
+    - main
+    - develop
+  create:
 jobs:
+      
   create:
     runs-on: ubuntu-latest
-    name: Create semantic version for the branch
+    name: Create branch semver
     if: ${{ contains(github.ref, 'refs/heads') }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Get Current Semver
+      id: current_semver
+      run: echo "::set-output name=SEMVER::$(cat Versionfile)"
         
-    - name: Parse semver
+    - name: Parse Current Semver
+      id: parsed_semver
       run: |
         echo ${{ github.ref }}
-        cat Versionfile
+        VERSION = "${{ steps.current_semver.outputs.SEMVER }}"
+        echo VERSION
         echo ${{ github.ref_name }}
+        
+        # Pattern by almic (https://gist.github.com/jhorsman/62eeea161a13b80e39f5249281e17c39)
+        pat = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$'
+        if [[VERSION =~ pat]]; then
+          # TODO: Check if BASH_REMATCH has the correct size
+          MAJOR="${BASH_REMATCH[0]}"
+          MINOR="${BASH_REMATCH[1]}"
+          PATCH="${BASH_REMATCH[2]}"
+          PARSED_SEMVER=(MAJOR, MINOR, PATCH)
+          echo "::set-output name=PARSED_SEMVER::PARSED_SEMVER"
+        fi
+    - name: Update Semver on PR
+      if: ${{ github.event.pull_request && github.event.pull_request.merged == true }}
+      run: |
+        PARSED_SEMVER = steps.parsed_semver.outputs.PARSED_SEMVER
+        MAJOR = PARSED_SEMVER[0]
+        MINOR = PARSED_SEMVER[1]
+        PATCH = PARSED_SEMVER[2]
+        echo $MAJOR $MINOR $PATCH
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
