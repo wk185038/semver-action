@@ -5,6 +5,7 @@ jobs:
   create:
     runs-on: ubuntu-latest
     name: Create semantic version for the branch
+    if: ${{ contains(github.ref, 'refs/heads') }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -12,6 +13,6 @@ jobs:
         fetch-depth: 0
         
     - name: Parse semver
-      if: ${{ contains(github.ref, 'refs/heads') }}
       run: |
-        ls
+        echo ${{ github.ref }}
+        cat Versionfile
