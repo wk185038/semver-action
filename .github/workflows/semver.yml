@@ -26,12 +26,12 @@ jobs:
       run: |
         echo ${{ github.ref }}
         VERSION = "${{ steps.current_semver.outputs.SEMVER }}"
-        echo VERSION
+        echo $VERSION
         echo ${{ github.ref_name }}
         
         # Pattern by almic (https://gist.github.com/jhorsman/62eeea161a13b80e39f5249281e17c39)
         pat = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$'
-        if [[VERSION =~ pat]]; then
+        if [[$VERSION =~ pat]]; then
           # TODO: Check if BASH_REMATCH has the correct size
           MAJOR="${BASH_REMATCH[0]}"
           MINOR="${BASH_REMATCH[1]}"
