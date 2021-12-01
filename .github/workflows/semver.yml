@@ -26,11 +26,10 @@ jobs:
         VERSION="${{ steps.current_semver.outputs.SEMVER }}"
         echo $VERSION
         echo ${{ github.ref_name }}
-        
         # Pattern by almic (https://gist.github.com/jhorsman/62eeea161a13b80e39f5249281e17c39)
         PAT='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$'
         echo $PAT
-        if [[$VERSION =~ ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$]]; then
+        if [[$VERSION =~ $PAT]; then
           # TODO: Check if BASH_REMATCH has the correct size
           MAJOR="${BASH_REMATCH[0]}"
           MINOR="${BASH_REMATCH[1]}"
@@ -40,6 +39,7 @@ jobs:
           echo "${PARSED_SEMVER[*]}"
           echo "::set-output name=PARSED_SEMVER::PARSED_SEMVER"
         fi
+        
     - name: Update Semver on PR
       if: ${{ github.event.pull_request && github.event.pull_request.merged == true }}
       run: |
