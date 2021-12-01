@@ -29,7 +29,8 @@ jobs:
         
         # Pattern by almic (https://gist.github.com/jhorsman/62eeea161a13b80e39f5249281e17c39)
         PAT='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$'
-        if [[$VERSION =~ $PAT]]; then
+        echo $PAT
+        if [[$VERSION =~ ^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-[a-zA-Z\d][-a-zA-Z.\d]*)?(\+[a-zA-Z\d][-a-zA-Z.\d]*)?$]]; then
           # TODO: Check if BASH_REMATCH has the correct size
           MAJOR="${BASH_REMATCH[0]}"
           MINOR="${BASH_REMATCH[1]}"
