@@ -46,6 +46,7 @@ jobs:
           let regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
           const matches = semver.match(regex); // TODO: throw an error if no match
           let [major, minor, patch, branch, commit] = [matches[1],matches[2],matches[3],"",""];
+          console.log(matches);
           let parsedSemver = {major: parseInt(major), minor: parseInt(minor), patch: parseInt(patch)};
           if (matches[0].includes('+') && matches[0].includes('-')) {
             branch = matches[4];
