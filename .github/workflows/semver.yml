@@ -37,12 +37,15 @@ jobs:
 #           echo "::set-output name=PARSED_SEMVER::PARSED_SEMVER"
 #         fi
     - name: Get event name
-      run: echo $GITHUB_EVENT_NAME
+      id: event_name
+      run: echo "::set-output name=EVENT_NAME::$GITHUB_EVENT_NAME"
+      
     - name: Parse Semver using Github Script
       uses: actions/github-script@v5
       id: parsed_semver
       with:
         script: |
+          console.log("${{ steps.event_name.outputs.EVENT_NAME }}");
           console.log(`refname ${{ github.ref_name }}, ${{ github.ref }}`);
           let semver = "${{ steps.current_semver.outputs.SEMVER }}";
           let regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
