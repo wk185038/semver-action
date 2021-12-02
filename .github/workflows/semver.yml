@@ -41,11 +41,8 @@ jobs:
       id: parsed_semver
       with:
         script: |
-          
           console.log("${{ GITHUB_EVENT_NAME }}");
-          console.log("${{ $GITHUB_EVENT_NAME }}");
-          
-          console.log("${{ env.GITHUB_EVENT_NAME }}");
+          console.log("${{ $GITHUB_EVENT_NAME }}"); 
           console.log(`refname ${{ github.ref_name }}, ${{ github.ref }}`);
           let semver = "${{ steps.current_semver.outputs.SEMVER }}";
           let regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
