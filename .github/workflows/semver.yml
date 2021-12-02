@@ -41,6 +41,7 @@ jobs:
       id: parsed_semver
       with:
         script: |
+          console.log(`refname ${{ github.ref_name }}, ${{ github.ref }}`);
           let semver = "${{ steps.current_semver.outputs.SEMVER }}";
           let regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
           const matches = semver.match(regex); // TODO: throw an error if no match
@@ -74,7 +75,7 @@ jobs:
             } 
             // TODO: Address unhandled use cases
             // - can u merge from dev to another branch? when would that happen?
-          } else if (${{ github.event.create }}) {
+          } else if ("${{ github.event.create }}") {
            // TODO: Change this into regex match
             parsedSemver.branch = "${{ github.ref_name }}";
           }
