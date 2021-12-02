@@ -39,7 +39,6 @@ jobs:
             branch, commit = meta[1].split("+");
             [branch, commit] = meta[1].split("+");
           }
-
           let headRef = "${{github.head_ref}}";
           let baseRef = "${{github.base_ref}}";
 
@@ -83,6 +82,3 @@ jobs:
 #     - name: Publish repo
 #       run: |
 #         echo "publishing..."
-
-
-
