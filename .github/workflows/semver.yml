@@ -81,7 +81,7 @@ jobs:
           }
           console.log("updated semver");
           console.log(parsedSemver);
-          return res;
+          return parsedSemver;
           
     - name: Update Semver on Push
       if: ${{ github.event.push }}
