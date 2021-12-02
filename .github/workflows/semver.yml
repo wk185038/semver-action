@@ -1,0 +1,127 @@
+name: Get Semantic Version for branch
+on: 
+  pull_request:
+    types: [closed]
+    branches:
+    - main
+    - develop
+  create:
+  push:
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    name: Create branch semver
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Get Current Semver
+      id: current_semver
+      run: echo "::set-output name=SEMVER::$(cat Versionfile)"
+        
+#     - name: Parse Current Semver
+#       id: parsed_semver
+#       run: |
+#         echo ${{ github.ref }}
+#         VERSION="${{ steps.current_semver.outputs.SEMVER }}"
+#         echo $VERSION
+#         echo ${{ github.ref_name }}
+#         if [[$VERSION =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?]; then
+#           MAJOR="${BASH_REMATCH[0]}"
+#           MINOR="${BASH_REMATCH[1]}"
+#           PATCH="${BASH_REMATCH[2]}"
+#           PARSED_SEMVER=(MAJOR, MINOR, PATCH)
+#           echo $MAJOR $MINOR $PATCH
+#           echo "${PARSED_SEMVER[*]}"
+#           echo "::set-output name=PARSED_SEMVER::PARSED_SEMVER"
+#         fi
+    - name: Get event name
+      id: event_name
+      run: echo "::set-output name=EVENT_NAME::$GITHUB_EVENT_NAME"
+      
+    - name: Parse Semver using Github Script
+      uses: actions/github-script@v5
+      id: parsed_semver
+      with:
+        script: |
+          // TODO: Grab event name without going thru a separate step, straight from environment variable
+          console.log("${{ steps.event_name.outputs.EVENT_NAME }}");
+          const eventName = "${{ steps.event_name.outputs.EVENT_NAME }}";
+          console.log(`refname ${{ github.ref_name }}, ${{ github.ref }}`);
+          let semver = "${{ steps.current_semver.outputs.SEMVER }}";
+          let regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+          const matches = semver.match(regex); // TODO: throw an error if no match
+          let [major, minor, patch, branch, commit] = [matches[1],matches[2],matches[3],"",""];
+          console.log(matches);
+          let parsedSemver = {major: parseInt(major), minor: parseInt(minor), patch: parseInt(patch)};
+          if (matches[0].includes('+') && matches[0].includes('-')) {
+            branch = matches[4];
+            commit = parseInt(matches[5]);
+            parsedSemver = {...parsedSemver, branch, commit};
+          }
+          console.log(parsedSemver);
+          if ("${{ github.event.push }}") {
+            parsedSemver.commit += 1;
+          } else if ("${{ github.event.pull_request && github.event.pull_request.merged == true }}") {
+            // TODO: check if base_ref returns full ref
+            if ("${{ github.head_ref }}".includes("release/")) {
+              // `release` can merge to develop or main
+              parsedSemver.branch = "${{ github.base_ref }}";
+              parsedSemver.minor += 1;
+              // in case for develop, we need to reset the commit count to 0
+              parsedSemver.commit = parsedSemver.commit && 0; 
+            } else if ("${{ github.head_ref }}".includes("feature/")) { 
+              // TODO: Add base ref checks. feature should only merge to feature
+              // We don't need to take care of the use case feature/ -> dev because this is handled on `push` case above
+              parsedSemver.commit = parsedSemver.commit && 0;
+              parsedSemver.branch = "${{ github.base_ref }}";
+            } else if ("${{ github.head_ref }}".includes("hotfix/")) { // TODO: Add base ref checks
+              // Hotfixes should increment patch. They can only merge to main
+              // TODO: Add base ref checks
+              parsedSemver.patch += 1;
+            } 
+            // TODO: Address unhandled use cases
+            // - can u merge from dev to another branch? when would that happen?
+          } else if ("${{ github.event.create }}") {
+           // TODO: Change this into regex match
+            parsedSemver.branch = "${{ github.ref_name }}";
+          }
+          console.log("updated semver");
+          console.log(parsedSemver);
+          return parsedSemver;
+          
+    - name: Update Semver on Push
+      if: ${{ github.event.push }}
+      run: |
+        MAJOR=$PARSED_SEMVER[0]
+        MINOR=$PARSED_SEMVER[1]
+        PATCH=$PARSED_SEMVER[2]
+          
+        
+    - name: Update Semver on PR
+      if: ${{ github.event.pull_request && github.event.pull_request.merged == true }}
+      run: |
+        PARSED_SEMVER=${{ steps.parsed_semver.outputs.PARSED_SEMVER }}
+        echo "${PARSED_SEMVER[*]}"
+        MAJOR=$PARSED_SEMVER[0]
+        MINOR=$PARSED_SEMVER[1]
+        PATCH=$PARSED_SEMVER[2]
+        echo $MAJOR $MINOR $PATCH
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
