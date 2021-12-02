@@ -61,7 +61,7 @@ jobs:
             parsedSemver = {...parsedSemver, branch, commit};
           }
           console.log(parsedSemver);
-          if ("${{ github.event.push }}") {
+          if (eventName === "push") {
             parsedSemver.commit += 1;
           } else if ("${{ github.event.pull_request && github.event.pull_request.merged == true }}") {
             // TODO: check if base_ref returns full ref
@@ -83,7 +83,7 @@ jobs:
             } 
             // TODO: Address unhandled use cases
             // - can u merge from dev to another branch? when would that happen?
-          } else if ("${{ github.event.create }}") {
+          } else if (eventName === "create") {
            // TODO: Change this into regex match
             parsedSemver.branch = "${{ github.ref_name }}";
           }
