@@ -45,7 +45,9 @@ jobs:
       id: parsed_semver
       with:
         script: |
+          // TODO: Grab event name without going thru a separate step, straight from environment variable
           console.log("${{ steps.event_name.outputs.EVENT_NAME }}");
+          const eventName = "${{ steps.event_name.outputs.EVENT_NAME }}";
           console.log(`refname ${{ github.ref_name }}, ${{ github.ref }}`);
           let semver = "${{ steps.current_semver.outputs.SEMVER }}";
           let regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
