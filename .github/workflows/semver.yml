@@ -50,7 +50,7 @@ jobs:
           let parsedSemver = {major: parseInt(major), minor: parseInt(minor), patch: parseInt(patch)};
           if (matches[0].includes('+') && matches[0].includes('-')) {
             branch = matches[4];
-            commit = parseInt(commit);
+            commit = parseInt(matches[5]);
             parsedSemver = {...parsedSemver, branch, commit};
           }
           console.log(parsedSemver);
