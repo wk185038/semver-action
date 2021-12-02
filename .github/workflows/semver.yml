@@ -53,9 +53,9 @@ jobs:
             parsedSemver = {...parsedSemver, branch, commit};
           }
           console.log(parsedSemver);
-          if (${{ github.event.push }}) {
+          if ("${{ github.event.push }}") {
             parsedSemver.commit += 1;
-          } else if (${{ github.event.pull_request && github.event.pull_request.merged == true }}) {
+          } else if ("${{ github.event.pull_request && github.event.pull_request.merged == true }}") {
             // TODO: check if base_ref returns full ref
             if ("${{ github.head_ref }}".includes("release/")) {
               // `release` can merge to develop or main
