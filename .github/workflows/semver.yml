@@ -19,23 +19,7 @@ jobs:
     - name: Get Current Semver
       id: current_semver
       run: echo "::set-output name=SEMVER::$(cat Versionfile)"
-        
-#     - name: Parse Current Semver
-#       id: parsed_semver
-#       run: |
-#         echo ${{ github.ref }}
-#         VERSION="${{ steps.current_semver.outputs.SEMVER }}"
-#         echo $VERSION
-#         echo ${{ github.ref_name }}
-#         if [[$VERSION =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(\+([0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*))?]; then
-#           MAJOR="${BASH_REMATCH[0]}"
-#           MINOR="${BASH_REMATCH[1]}"
-#           PATCH="${BASH_REMATCH[2]}"
-#           PARSED_SEMVER=(MAJOR, MINOR, PATCH)
-#           echo $MAJOR $MINOR $PATCH
-#           echo "${PARSED_SEMVER[*]}"
-#           echo "::set-output name=PARSED_SEMVER::PARSED_SEMVER"
-#         fi
+  
     - name: Get event name
       id: event_name
       run: echo "::set-output name=EVENT_NAME::$GITHUB_EVENT_NAME"
